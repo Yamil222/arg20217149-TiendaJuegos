@@ -1,0 +1,39 @@
+CREATE DATABASE IF NOT EXISTS juegos_fisicos;
+
+USE juegos_fisicos;
+
+-- Tabla para los usuarios (administradores y clientes)
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    tipo ENUM('admin', 'cliente') NOT NULL
+);
+
+-- Tabla para los juegos físicos
+CREATE TABLE IF NOT EXISTS juegos (
+    id_juego INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_juego VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL
+);
+
+-- Tabla para las compras
+CREATE TABLE IF NOT EXISTS compras (
+    id_compra INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    fecha_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
+
+-- Tabla intermedia para los detalles de las compras
+CREATE TABLE IF NOT EXISTS compra_juegos (
+    id_compra INT NOT NULL,
+    id_juego INT NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (id_compra, id_juego),
+    FOREIGN KEY (id_compra) REFERENCES compras(id_compra),
+    FOREIGN KEY (id_juego) REFERENCES juegos(id_juego)
+);
